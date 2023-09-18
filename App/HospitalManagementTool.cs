@@ -7,10 +7,11 @@ namespace HospitalManagementTool.App
     {
         static void Main(string[] args)
         {
+            // For loop to handle user
             while (true)
             {
                 User user = AppScreen.Login();
-                AppScreen.HandleUser(user);
+                AppScreen.HandleUser(user); // Handle user till log out
             }
         }
     }

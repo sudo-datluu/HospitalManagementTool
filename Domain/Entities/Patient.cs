@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HospitalManagementTool.Tools;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -13,6 +14,61 @@ namespace HospitalManagementTool.Domain.Entities
         {
         }
 
+        // Handle menu for patient
+        public void handleMenu()
+        {
+            bool isLogIn = true;
+            while (isLogIn)
+            {
+                this.DrawPatientMenu();
+                int menuOption = Validator.Convert<Int16>("Your option: ", false, false);
+                switch (menuOption)
+                {
+                    case 1:
+                        this.printDetail();
+                        break;
+                    case 5:
+                        isLogIn = false;
+                        break;
+                    case 6:
+                        System.Environment.Exit(0);
+                        break;
+                    default:
+                        Utility.PrintMessage("Invalid Options. Try Again", false);
+                        break;
+                }
+            }
+        }
+
+        /*
+         Method for printing detail of a patient
+         */
+        public void printDetail()
+        {
+            string banner = @"
++-------------------+
+|DL Hospital Manager|
+|-------------------|
+| My Patient detail |
++-------------------+
+";
+            Console.Clear();
+            Console.WriteLine();
+            Console.WriteLine(banner);
+            string result = $@"
+Patient ID: {this.ID}
+Fullname: {this.Fullname}
+Address: {this.Address}
+Email: {this.Email}
+Phone: {this.Phone}
+";
+            Console.WriteLine(result);
+            Utility.PressKeyContinue();
+        }
+
+        /*
+         Method for printing Menu option for patient user
+         */
         public void DrawPatientMenu()
         {
             string banner = @"

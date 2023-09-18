@@ -9,7 +9,11 @@ namespace HospitalManagementTool.Tools
 {
     public static class Validator
     {
-        public static T Convert<T>(string prompt)
+        // Try to convert input to target type
+        // define prompt to announce info for the input
+        // isLoop = true if you want to keep user continue to enter input
+        // isMsg = true if you want to print error message to console
+        public static T Convert<T>(string prompt, bool isLoop = true, bool isMsg=true)
         {
             bool valid = false;
             string userInput;
@@ -31,8 +35,14 @@ namespace HospitalManagementTool.Tools
                 }
                 catch
                 {
-                    Console.WriteLine("Invalid Input. Please try again");
+                    if (isMsg)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Invalid Input. Please try again");
+                        Console.ResetColor();
+                    }
                 }
+                if (!isLoop) { break; }
             }
             return default;
         }

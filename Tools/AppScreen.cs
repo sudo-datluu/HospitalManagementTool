@@ -9,6 +9,7 @@ namespace HospitalManagementTool.Tools
 {
     public static class AppScreen
     {
+        // Method for print login screen
         internal static User Login()
         {
             string banner = @"
@@ -35,6 +36,7 @@ namespace HospitalManagementTool.Tools
             return user;
         }
 
+        // Method print different type of user screens
         internal static void HandleUser(User user) {
             if (user != null)
             {
@@ -45,6 +47,7 @@ namespace HospitalManagementTool.Tools
                         break;
                     case AppRole.Patient:
                         Patient patient = new Patient(user.ID, user.Password, user.Fullname, user.Address, user.Email, user.Phone);
+                        patient.handleMenu();
                         break;
                 }
             }

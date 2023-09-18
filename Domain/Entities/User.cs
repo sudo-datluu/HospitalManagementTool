@@ -16,6 +16,10 @@ public enum AppRole
 
 namespace HospitalManagementTool.Domain.Entities
 {
+    /*
+     Class represent for user of a system
+     Contain common info and method for different type of user
+     */
     public class User
     {
         private static readonly string _userDatabaseFile = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName, @"Database\users.txt");
@@ -29,9 +33,9 @@ namespace HospitalManagementTool.Domain.Entities
         public AppRole Role { get; }
 
 
-        public User(string ID, string password, string fullname, string address, string email, string phone, AppRole role)
+        public User(string id, string password, string fullname, string address, string email, string phone, AppRole role)
         {
-            ID = ID;
+            ID = id;
             Password = password;
             Fullname = fullname;
             Address = address;
@@ -40,6 +44,8 @@ namespace HospitalManagementTool.Domain.Entities
             Role = role;
         }
 
+        // Login method for every user
+        // Return null if there is no match user
         static public User login(string ID, string password)
         {
             foreach (string line in File.ReadLines(_userDatabaseFile))

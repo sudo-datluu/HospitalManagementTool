@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-public enum _Role
+public enum AppRole
 {
     Patient,
     Doctor,
@@ -26,10 +26,10 @@ namespace HospitalManagementTool.Domain.Entities
         public string Address { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public _Role Role { get; }
+        public AppRole Role { get; }
 
 
-        public User(string ID, string password, string fullname, string address, string email, string phone, _Role role)
+        public User(string ID, string password, string fullname, string address, string email, string phone, AppRole role)
         {
             ID = ID;
             Password = password;
@@ -47,7 +47,7 @@ namespace HospitalManagementTool.Domain.Entities
                 string[] parts = line.Split(',');
                 if (parts[0].Equals(ID) && parts[1].Equals(password))  {
                     return new User(parts[0], parts[1], parts[2], parts[3],
-                        parts[4], parts[5], (_Role)Enum.Parse(typeof(_Role), parts[6]));
+                        parts[4], parts[5], (AppRole)Enum.Parse(typeof(AppRole), parts[6]));
                 };
             }
             return null;

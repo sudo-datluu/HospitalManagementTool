@@ -9,18 +9,8 @@ namespace HospitalManagementTool.App
         {
             while (true)
             {
-                AppScreen.Login();
-                string userID = Validator.Convert<string>("ID: ");
-                string password = Validator.Convert<string>("Password: ");
-                User user = User.login(userID, password);
-                if (user == null)
-                {
-                    Utility.PrintMessage("Invalid Credentials", false);
-                }
-                else
-                {
-                    Utility.PrintMessage("Valid Credentials");
-                }
+                User user = AppScreen.Login();
+                AppScreen.HandleUser(user);
             }
         }
     }

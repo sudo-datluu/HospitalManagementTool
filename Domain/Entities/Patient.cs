@@ -1,8 +1,10 @@
-﻿using HospitalManagementTool.Tools;
+﻿using ConsoleTables;
+using HospitalManagementTool.Tools;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,7 +12,9 @@ namespace HospitalManagementTool.Domain.Entities
 {
     public class Patient : User
     {
-        public Patient(string ID, string password, string fullname, string address, string email, string phone) : base(ID, password, fullname, address, email, phone, AppRole.Doctor)
+        public Doctor Doctor { get; set; }
+
+        public Patient(string ID, string password, string fullname, string address, string email, string phone) : base(ID, password, fullname, address, email, phone, AppRole.Patient)
         {
         }
 
@@ -94,6 +98,23 @@ Please choose an option:
 ";
             Console.WriteLine(patientOptions);
         }
-    }
 
+        // Print a table list of patients
+        internal static void printList(List<Patient> patientList)
+        {
+            var table = new ConsoleTable("Name", "Doctor", "Email Address", "Phone", "Address");
+            foreach (var patient in patientList)
+            {
+                if (patient.Doctor == null)
+                {
+                    table.AddRow(patient.Fullname,string.Empty, patient.Email, patient.Phone, patient.Address);
+                }
+                else
+                {
+                    table.AddRow(patient.Fullname, patient.Doctor.Fullname, patient.Email, patient.Phone, patient.Address);
+                }
+            }
+            table.Write();
+        }
+    }
 }

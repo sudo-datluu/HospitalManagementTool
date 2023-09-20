@@ -43,11 +43,15 @@ namespace HospitalManagementTool.Tools
                 switch (user.Role)
                 {
                     case AppRole.Doctor:
-                        Doctor doctor = new Doctor(user.ID, user.Password, user.Fullname, user.Address, user.Email, user.Phone);
+                        Doctor doctor = User.doctors[user.ID];
                         break;
                     case AppRole.Patient:
-                        Patient patient = new Patient(user.ID, user.Password, user.Fullname, user.Address, user.Email, user.Phone);
+                        Patient patient = User.patients[user.ID];
                         patient.handleMenu();
+                        break;
+                    case AppRole.Admin:
+                        Admin admin = User.admins[user.ID];
+                        admin.handleMenu();
                         break;
                 }
             }

@@ -11,7 +11,7 @@ public enum AppRole
 {
     Patient,
     Doctor,
-    Administrator
+    Admin
 }
 
 namespace HospitalManagementTool.Domain.Entities
@@ -22,7 +22,50 @@ namespace HospitalManagementTool.Domain.Entities
      */
     public class User
     {
-        private static readonly string _userDatabaseFile = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName, @"Database\users.txt");
+        private static readonly string _adminDatabaseFile = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName, @"Database\admins.txt");
+        private static readonly string _patientDatabaseFile = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName, @"Database\patients.txt");
+        private static readonly string _doctorDatabaseFile = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName, @"Database\doctors.txt");
+
+        public static Dictionary<string, Doctor> doctors =  new Dictionary<string, Doctor>();
+        public static Dictionary<string, Admin> admins = new Dictionary<string, Admin>();
+        public static Dictionary<string, Patient> patients = new Dictionary<string, Patient>();
+        public static Dictionary<string, User> users = new Dictionary<string, User>();
+
+        // Initialize data from text file
+        internal static void initData()
+        {
+            foreach (string line in File.ReadLines(_adminDatabaseFile))
+            {
+                string[] parts = line.Split(',');
+                Admin admin = new Admin(parts[0], parts[1], parts[2], parts[3],
+                        parts[4], parts[5]);
+                admins.Add(parts[0], admin);
+                users.Add(parts[0], admin);
+            }
+
+            foreach (string line in File.ReadLines(_doctorDatabaseFile))
+            {
+                string[] parts = line.Split(',');
+                Doctor doctor = new Doctor(parts[0], parts[1], parts[2], parts[3],
+                        parts[4], parts[5]);
+                doctors.Add(parts[0],doctor);
+                users.Add(parts[0], doctor);
+            }
+
+            foreach (string line in File.ReadLines(_patientDatabaseFile))
+            {
+                string[] parts = line.Split(',');
+                Patient patient = new Patient(parts[0], parts[1], parts[2], parts[3],
+                        parts[4], parts[5]);
+                if (parts.Length > 6)
+                {
+                    patient.Doctor = doctors[parts[6]];
+                    doctors[parts[6]].Patients.Add(patient);
+                }
+                patients.Add(parts[0], patient);
+                users.Add(parts[0], patient);
+            }
+        }
 
         public string ID { get; set; }
         public string Password { get; set; }
@@ -44,19 +87,18 @@ namespace HospitalManagementTool.Domain.Entities
             Role = role;
         }
 
+
         // Login method for every user
-        // Return null if there is no match user
+        // Return false if invalid credential
         static public User login(string ID, string password)
         {
-            foreach (string line in File.ReadLines(_userDatabaseFile))
+            User user;
+            if (users.TryGetValue(ID, out user))
             {
-                string[] parts = line.Split(',');
-                if (parts[0].Equals(ID) && parts[1].Equals(password))  {
-                    return new User(parts[0], parts[1], parts[2], parts[3],
-                        parts[4], parts[5], (AppRole)Enum.Parse(typeof(AppRole), parts[6]));
-                };
+                if (user.Password == password) return user;
+                return null;
             }
             return null;
-        }
+        } 
     }
 }

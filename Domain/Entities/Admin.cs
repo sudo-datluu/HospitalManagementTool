@@ -15,6 +15,11 @@ namespace HospitalManagementTool.Domain.Entities
         {
         }
 
+        public Admin(string id, string password) : base(id, password)
+        {
+            Role = AppRole.Admin;
+        }
+
         // Handle menu for admin user
         public void handleMenu()
         {

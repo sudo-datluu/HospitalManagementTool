@@ -1,4 +1,5 @@
-﻿using HospitalManagementTool.Tools;
+﻿using HospitalManagementTool.Data;
+using HospitalManagementTool.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,24 +24,13 @@ namespace HospitalManagementTool.Domain.Entities
      */
     public class User
     {
-        static readonly string _adminDatabaseFile = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName, @"Database\admins.txt");
-        static readonly string _patientDatabaseFile = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName, @"Database\patients.txt");
-        static readonly string _doctorDatabaseFile = Path.Combine(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName, @"Database\doctors.txt");
-        protected static string getDoctorFilePath() => _doctorDatabaseFile;
-        protected static string getPatitentFilePath() => _patientDatabaseFile;
-
-        internal static Dictionary<string, Doctor> doctors =  new Dictionary<string, Doctor>();
-        internal static Dictionary<string, Admin> admins = new Dictionary<string, Admin>();
-        internal static Dictionary<string, Patient> patients = new Dictionary<string, Patient>();
-        internal static Dictionary<string, User> users = new Dictionary<string, User>();
-
         public string ID { get; set; }
         public string Password { get; set; }
-        public string Fullname { get; set; }
-        public string Address { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public AppRole Role { get; }
+        public string Fullname { get; set; } = "";
+        public string Address { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string Phone { get; set; } = "";
+        public AppRole Role { get; set; }
 
 
         public User(string id, string password, string fullname, string address, string email, string phone, AppRole role)
@@ -54,43 +44,10 @@ namespace HospitalManagementTool.Domain.Entities
             Role = role;
         }
 
-        // Initialize data from text file
-        internal static void initData()
+        public User(string id, string password)
         {
-            //init admin data
-            foreach (string line in File.ReadLines(_adminDatabaseFile))
-            {
-                string[] parts = line.Split('_');
-                Admin admin = new Admin(parts[0], parts[1], parts[2], parts[3],
-                        parts[4], parts[5]);
-                admins.Add(parts[0], admin);
-                users.Add(parts[0], admin);
-            }
-
-            //init doctor data
-            foreach (string line in File.ReadLines(_doctorDatabaseFile))
-            {
-                string[] parts = line.Split('_');
-                Doctor doctor = new Doctor(parts[0], parts[1], parts[2], parts[3],
-                        parts[4], parts[5]);
-                doctors.Add(parts[0], doctor);
-                users.Add(parts[0], doctor);
-            }
-
-            //init patients data
-            foreach (string line in File.ReadLines(_patientDatabaseFile))
-            {
-                string[] parts = line.Split('_');
-                Patient patient = new Patient(parts[0], parts[1], parts[2], parts[3],
-                        parts[4], parts[5]);
-                if (parts.Length > 6)
-                {
-                    patient.Doctor = doctors[parts[6]];
-                    doctors[parts[6]].Patients.Add(patient.ID, patient);
-                }
-                patients.Add(parts[0], patient);
-                users.Add(parts[0], patient);
-            }
+            ID = id;
+            Password = password;
         }
 
         // Login method for every user
@@ -98,7 +55,7 @@ namespace HospitalManagementTool.Domain.Entities
         static public User? login(string ID, string password)
         {
             User? user;
-            if (User.users.TryGetValue(ID, out user))
+            if (DataManager.users.TryGetValue(ID, out user))
             {
                 if (user.Password == password) return user;
                 return null;
@@ -112,7 +69,7 @@ namespace HospitalManagementTool.Domain.Entities
         internal static string generateNewUserID()
         {
             string randomString = string.Empty;
-            while (randomString == string.Empty || User.users.ContainsKey(randomString))
+            while (randomString == string.Empty || DataManager.users.ContainsKey(randomString))
             {
                 randomString = Utility.generateDigits(3, 6);
             }

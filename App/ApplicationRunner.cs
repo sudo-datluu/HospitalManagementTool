@@ -1,4 +1,5 @@
-﻿using HospitalManagementTool.Domain.Entities;
+﻿using HospitalManagementTool.Data;
+using HospitalManagementTool.Domain.Entities;
 using HospitalManagementTool.Tools;
 using System;
 using System.Collections.Generic;
@@ -46,15 +47,15 @@ namespace HospitalManagementTool.App
                 switch (LoginUser.Role)
                 {
                     case AppRole.Doctor:
-                        Doctor doctor = User.doctors[LoginUser.ID];
+                        Doctor doctor = DataManager.doctors[LoginUser.ID];
                         doctor.handleMenu();
                         break;
                     case AppRole.Patient:
-                        Patient patient = User.patients[LoginUser.ID];
+                        Patient patient = DataManager.patients[LoginUser.ID];
                         patient.handleMenu();
                         break;
                     case AppRole.Admin:
-                        Admin admin = User.admins[LoginUser.ID];
+                        Admin admin = DataManager.admins[LoginUser.ID];
                         admin.handleMenu();
                         break;
                 }
@@ -62,7 +63,7 @@ namespace HospitalManagementTool.App
         }
 
         public void run() {
-            User.initData();
+            DataManager.initData();
             while (true) //loop to login again
             {
                 login(); //login user each time they log out or first time run

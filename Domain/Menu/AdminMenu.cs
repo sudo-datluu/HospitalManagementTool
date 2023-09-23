@@ -1,4 +1,5 @@
-﻿using HospitalManagementTool.Domain.Entities;
+﻿using HospitalManagementTool.Data;
+using HospitalManagementTool.Domain.Entities;
 using HospitalManagementTool.Tools;
 using System;
 using System.Collections.Generic;
@@ -121,7 +122,7 @@ namespace HospitalManagementTool.Domain.Menu
 +--------------------+
 ";
             Utility.writeBanner(banner);
-            Patient.printList(User.patients.Values.ToList());
+            Patient.printList(DataManager.patients.Values.ToList());
             Console.WriteLine();
             Utility.PressKeyContinue();
         }
@@ -137,7 +138,7 @@ namespace HospitalManagementTool.Domain.Menu
 +--------------------+
 ";
             Utility.writeBanner(banner);
-            Doctor.printList(User.doctors.Values.ToList());
+            Doctor.printList(DataManager.doctors.Values.ToList());
             Console.WriteLine();
             Utility.PressKeyContinue();
         }
@@ -157,7 +158,7 @@ namespace HospitalManagementTool.Domain.Menu
 ";
                 Utility.writeBanner(banner);
                 string patientID = Validator.Convert<string>("Enter patient ID: ");
-                if (User.patients.TryGetValue(patientID, out Patient? patient))
+                if (DataManager.patients.TryGetValue(patientID, out Patient? patient))
                 {
                     Console.WriteLine($"Detail for patient {patientID}");
                     Patient.printList(new List<Patient> { patient });
@@ -187,7 +188,7 @@ namespace HospitalManagementTool.Domain.Menu
 ";
                 Utility.writeBanner(banner);
                 string doctorID = Validator.Convert<string>("Enter doctor ID: ");
-                if (User.doctors.TryGetValue(doctorID, out Doctor? doctor))
+                if (DataManager.doctors.TryGetValue(doctorID, out Doctor? doctor))
                 {
                     Console.WriteLine($"Detail for patient {doctorID}");
                     Doctor.printList(new List<Doctor> { doctor });

@@ -1,4 +1,5 @@
-﻿using HospitalManagementTool.Domain.Menu;
+﻿using HospitalManagementTool.Data;
+using HospitalManagementTool.Domain.Menu;
 using HospitalManagementTool.Tools;
 using System;
 using System.Collections.Generic;
@@ -84,11 +85,11 @@ namespace HospitalManagementTool.Domain.Entities
         // Save this paitent to database
         public void save()
         {
-            if (!User.users.ContainsKey(this.ID))
+            if (!DataManager.users.ContainsKey(this.ID))
             {
-                this.writeData(User.getPatitentFilePath());
-                User.patients.Add(this.ID, this);
-                User.users.Add(this.ID, this);
+                this.writeData(DataManager._patientDatabaseFile);
+                DataManager.patients.Add(this.ID, this);
+                DataManager.users.Add(this.ID, this);
             }
         }
     }

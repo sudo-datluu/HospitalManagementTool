@@ -1,4 +1,5 @@
-﻿using HospitalManagementTool.Tools;
+﻿using HospitalManagementTool.Domain.Menu;
+using HospitalManagementTool.Tools;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +12,7 @@ namespace HospitalManagementTool.Domain.Entities
 {
     public class Patient : User
     {
-        public Doctor Doctor { get; set; }
+        public Doctor? Doctor { get; set; }
 
         public Patient(string ID, string password, string fullname, string address, string email, string phone)
             : base(ID, password, fullname, address, email, phone, AppRole.Patient)
@@ -21,15 +22,19 @@ namespace HospitalManagementTool.Domain.Entities
         // Handle menu for patient
         public void handleMenu()
         {
+            PatientMenu menu = new PatientMenu(this);
             bool isLogIn = true;
             while (isLogIn)
             {
-                this.DrawPatientMenu();
+                menu.drawOptions();
                 int menuOption = Validator.Convert<Int16>("Your option: ", false, false);
                 switch (menuOption)
                 {
                     case 1:
-                        this.printDetail();
+                        menu.printDetail();
+                        break;
+                    case 2:
+                        menu.printMyDoctorDetail();
                         break;
                     case 5:
                         isLogIn = false;
@@ -44,71 +49,47 @@ namespace HospitalManagementTool.Domain.Entities
             }
         }
 
-        
-        
-        //Printing detail of a patient.
-        public void printDetail()
-        {
-            string banner = 
-@"+-------------------+
-|DL Hospital Manager|
-|-------------------|
-| My Patient detail |
-+-------------------+
-";
-            Utility.writeBanner(banner);
-            string result = $@"
-Patient ID: {this.ID}
-Fullname: {this.Fullname}
-Address: {this.Address}
-Email: {this.Email}
-Phone: {this.Phone}
-";
-            Console.WriteLine(result);
-            Utility.PressKeyContinue();
-        }
-
-        // Draw patient menu console UI
-        public void DrawPatientMenu()
-        {
-            string banner = @"
-+-------------------+
-|DL Hospital Manager|
-|-------------------|
-|   Patient Menu    |
-+-------------------+
-";
-            Utility.writeBanner(banner);
-            Console.WriteLine($"Welcome to the DL Hospital Manager Tool {this.Fullname}");
-            Console.WriteLine();
-            string patientOptions = @"
-Please choose an option:
-1. List Patient Details
-2. List my doctor detail
-3. List all apointments
-4. Book appointment
-5. Exit to login
-6. Exit system
-";
-            Console.WriteLine(patientOptions);
-        }
-
         // Print a table list of patients
-        internal static void printList(List<Patient> patientList)
+        internal static void printList(List<Patient> patientList, bool withDoctor=true)
         {
-            var table = new TablePrinter("Name", "Doctor", "Email Address", "Phone", "Address");
-            foreach (var patient in patientList)
+
+            if (withDoctor) 
             {
-                if (patient.Doctor == null)
+                var table = new TablePrinter("Name", "Doctor", "Email Address", "Phone", "Address");
+                foreach (var patient in patientList)
                 {
-                    table.AddRow(patient.Fullname,string.Empty, patient.Email, patient.Phone, patient.Address);
+                    if (patient.Doctor == null)
+                    {
+                        table.AddRow(patient.Fullname, string.Empty, patient.Email, patient.Phone, patient.Address);
+                    }
+                    else
+                    {
+                        table.AddRow(patient.Fullname, patient.Doctor.Fullname, patient.Email, patient.Phone, patient.Address);
+                    }
                 }
-                else
-                {
-                    table.AddRow(patient.Fullname, patient.Doctor.Fullname, patient.Email, patient.Phone, patient.Address);
-                }
+                table.Print();
             }
-            table.Print();
+            else
+            {
+                var table = new TablePrinter("Name", "Email Address", "Phone", "Address");
+                patientList.ForEach(patient =>
+                {
+                    table.AddRow(patient.Fullname, patient.Email, patient.Phone, patient.Address);
+                });
+                table.Print();
+            }
+            
+        }
+
+        // Save this paitent to database
+        public void save()
+        {
+            if (!User.users.ContainsKey(this.ID))
+            {
+                this.writeData(User.getPatitentFilePath());
+                User.patients.Add(this.ID, this);
+                User.users.Add(this.ID, this);
+            }
         }
     }
 }

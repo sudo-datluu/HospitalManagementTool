@@ -10,7 +10,7 @@ namespace HospitalManagementTool.Tools
     public static class Utility
     {
         // Get user input from message
-        public static string GetUserInput(string prompt)
+        public static string? GetUserInput(string prompt)
         {
             Console.Write(prompt);
             return Console.ReadLine();

@@ -21,7 +21,7 @@ namespace HospitalManagementTool.Tools
             ColumnLengths = Headers.Select(t => t.Length).ToList();
         }
 
-        // Add 
+        // Add row
         public void AddRow(params object[] row)
         {
             if (row.Length != Headers.Length)

@@ -29,11 +29,20 @@ namespace HospitalManagementTool.Domain.Entities
                     case 1:
                         menu.printAllDoctors();
                         break;
+                    case 2:
+                        menu.checkDoctorDetail();
+                        break;
                     case 3:
                         menu.printAllPatients();
                         break;
+                    case 4:
+                        menu.checkPatientDetail();
+                        break;
                     case 5:
                         menu.addDoctor();
+                        break;
+                    case 6:
+                        menu.addPatient();
                         break;
                     case 7:
                         isLogIn = false;

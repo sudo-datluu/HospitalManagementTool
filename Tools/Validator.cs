@@ -16,7 +16,7 @@ namespace HospitalManagementTool.Tools
         public static T Convert<T>(string prompt, bool isLoop = true, bool isMsg=true)
         {
             bool valid = false;
-            string userInput;
+            string? userInput;
 
             while (!valid)
             {

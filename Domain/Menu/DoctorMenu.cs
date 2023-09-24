@@ -75,6 +75,54 @@ namespace HospitalManagementTool.Domain.Menu
             Utility.PressKeyContinue();
         }
 
+        //Print appointment list
+        public void printAllAppointments()
+        {
+            string banner =
+@"+-----------------------------+
+|     DL Hospital Manager     |
+|-----------------------------|
+|       My Appointments       |
++-----------------------------+
+";
+            Utility.writeBanner(banner);
+            List<Appointment> appointments = new List<Appointment>();
+            Doctor.Patients.Values.ToList().ForEach(patient => { 
+                appointments.AddRange(patient.Appointments);
+            });
+            Appointment.printList(appointments);
+            Utility.PressKeyContinue();
+        }
+
+        //Check appointment of a patient
+        public void checkPatientAppointment()
+        {
+            while (true)
+            {
+                string banner =
+@"+---------------------------------+
+|      DL Hospital Manager        |
+|---------------------------------|
+|     Check patient appointment   |
++---------------------------------+
+";
+                Utility.writeBanner(banner);
+                string patientID = Validator.Convert<string>("Enter patient ID you wish to check appointment: ");
+                if (Doctor.Patients.TryGetValue(patientID, out Patient? patient))
+                {
+                    Console.WriteLine($"Appointments for patient {patient.Fullname}");
+                    Appointment.printList(patient.Appointments);
+                }
+                else
+                {
+                    Console.WriteLine($"There is no patient assigned to {Doctor.Fullname} that match with ID: {patientID}");
+                }
+                Console.WriteLine("Press Esc to exit, press any key to continue");
+                ConsoleKeyInfo key = Console.ReadKey();
+                if (key.Key == ConsoleKey.Escape) break;
+            }
+        }
+
         // Search for a patient of this doctor
         public void checkPatientDetail()
         {

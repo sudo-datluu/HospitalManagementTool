@@ -4,6 +4,7 @@ using HospitalManagementTool.Tools;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -13,6 +14,7 @@ namespace HospitalManagementTool.Domain.Entities
 {
     public class Patient : User
     {
+        public List<Appointment> Appointments { get; set; } = new List<Appointment>();
         public Doctor? Doctor { get; set; }
 
         public Patient(string ID, string password, string fullname, string address, string email, string phone)
@@ -37,6 +39,12 @@ namespace HospitalManagementTool.Domain.Entities
                     case 2:
                         menu.printMyDoctorDetail();
                         break;
+                    case 3:
+                        menu.printMyAppointments();
+                        break;
+                    case 4:
+                        menu.bookAppointment();
+                        break;
                     case 5:
                         isLogIn = false;
                         break;
@@ -56,30 +64,44 @@ namespace HospitalManagementTool.Domain.Entities
 
             if (withDoctor) 
             {
-                var table = new TablePrinter("Name", "Doctor", "Email Address", "Phone", "Address");
+                var table = new TablePrinter("ID", "Name", "Doctor", "Email Address", "Phone", "Address");
                 foreach (var patient in patientList)
                 {
                     if (patient.Doctor == null)
                     {
-                        table.AddRow(patient.Fullname, string.Empty, patient.Email, patient.Phone, patient.Address);
+                        table.AddRow(patient.ID, patient.Fullname, string.Empty, patient.Email, patient.Phone, patient.Address);
                     }
                     else
                     {
-                        table.AddRow(patient.Fullname, patient.Doctor.Fullname, patient.Email, patient.Phone, patient.Address);
+                        table.AddRow(patient.ID, patient.Fullname, patient.Doctor.Fullname, patient.Email, patient.Phone, patient.Address);
                     }
                 }
                 table.Print();
             }
             else
             {
-                var table = new TablePrinter("Name", "Email Address", "Phone", "Address");
+                var table = new TablePrinter("ID","Name", "Email Address", "Phone", "Address");
                 patientList.ForEach(patient =>
                 {
-                    table.AddRow(patient.Fullname, patient.Email, patient.Phone, patient.Address);
+                    table.AddRow(patient.ID, patient.Fullname, patient.Email, patient.Phone, patient.Address);
                 });
                 table.Print();
             }
             
+        }
+
+        // Save my doctor to database
+        public void saveDoctor(Doctor doctor)
+        {
+            if (this.Doctor == null)
+            {
+                Doctor = doctor;
+                doctor.Patients.Add(this.ID, this);
+                using (StreamWriter stream = new StreamWriter(DataManager._assignDatabaseFile, true))
+                {
+                    stream.WriteLine($"{this.ID}_{this.Doctor.ID}");
+                }
+            }
         }
 
         // Save this paitent to database

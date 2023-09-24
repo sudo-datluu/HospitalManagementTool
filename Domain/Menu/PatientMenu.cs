@@ -1,4 +1,5 @@
-﻿using HospitalManagementTool.Domain.Entities;
+﻿using HospitalManagementTool.Data;
+using HospitalManagementTool.Domain.Entities;
 using HospitalManagementTool.Tools;
 using System;
 using System.Collections.Generic;
@@ -53,6 +54,61 @@ Phone: {Patient.Phone}
             }
             else Console.WriteLine("You have not registered to any doctor");
             Utility.PressKeyContinue();
+        }
+
+        // List all patient appointments
+        public void printMyAppointments()
+        {
+            string banner =
+@"+-----------------------------+
+|     DL Hospital Manager     |
+|-----------------------------|
+|       My Appointments       |
++-----------------------------+
+";
+            Utility.writeBanner(banner);
+            Appointment.printList(Patient.Appointments);
+            Utility.PressKeyContinue();
+        }
+
+        // Book appointment
+        public void bookAppointment()
+        {
+            string banner =
+@"+-----------------------------+
+|     DL Hospital Manager     |
+|-----------------------------|
+|      Book Appointment       |
++-----------------------------+
+";
+            while (true)
+            {
+                Utility.writeBanner(banner);
+                if (Patient.Doctor == null)
+                {
+                    Console.WriteLine("You are not registered with any doctor. Please choose your doctor");
+                    Doctor.printList(DataManager.doctors.Values.ToList());
+
+                    string registerDoctorID = Validator.Convert<string>("Enter wishful doctor ID: ");
+                    if (DataManager.doctors.TryGetValue(registerDoctorID, out Doctor? doctor))
+                    {
+                        Patient.saveDoctor(doctor);
+                    }
+                    else
+                    {
+                        Utility.PrintMessage("Invalid input. Please try again", false);
+                        continue;
+                    }
+                }
+                Console.WriteLine($"You are booking a new appointment with {Patient.Doctor.Fullname}");
+                string description = Validator.Convert<string>("Enter Appointment Description: ");
+                Appointment appointment = new Appointment(Patient.Doctor, Patient, description);
+                appointment.save();
+                Console.WriteLine();
+                Console.WriteLine("Booking success! Press Esc to exit, press any key to continue booking");
+                ConsoleKeyInfo key = Console.ReadKey();
+                if (key.Key == ConsoleKey.Escape) break;
+            }
         }
 
         // Draw patient menu console UI

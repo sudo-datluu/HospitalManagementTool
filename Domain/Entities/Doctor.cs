@@ -35,8 +35,14 @@ namespace HospitalManagementTool.Domain.Entities
                     case 2:
                         menu.printPatientsDetail();
                         break;
+                    case 3:
+                        menu.printAllAppointments();
+                        break;
                     case 4:
                         menu.checkPatientDetail();
+                        break;
+                    case 5:
+                        menu.checkPatientAppointment();
                         break;
                     case 6:
                         isLogIn = false;
@@ -54,10 +60,10 @@ namespace HospitalManagementTool.Domain.Entities
         // Print a table list of doctors
         internal static void printList(List<Doctor> doctorList)
         {
-            var table = new TablePrinter("Name", "Email Address", "Phone", "Address");
+            var table = new TablePrinter("ID", "Name", "Email Address", "Phone", "Address");
             foreach (var doctor in doctorList)
             {
-                table.AddRow(doctor.Fullname, doctor.Email, doctor.Phone, doctor.Address);
+                table.AddRow(doctor.ID, doctor.Fullname, doctor.Email, doctor.Phone, doctor.Address);
             }
             table.Print();
         }
